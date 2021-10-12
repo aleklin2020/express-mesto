@@ -17,5 +17,5 @@ const userSchema = new mongoose.Schema({
     required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
   },
 });
-
 module.exports = mongoose.model("user", userSchema);
+

@@ -20,8 +20,7 @@ module.exports.postUsers = (req, res) => {
       return res.status(200).send(user);
     })
     .catch((err) => {
-      console.log(`Ошибка: ${err}`);
-      res.status(500).send({ message: err });
+      return res.status(500).send({ message: err });
     });
 }
 // Возврашение пользователя по id
@@ -29,18 +28,16 @@ module.exports.getUsersId =  (reg, res) => {
  return  user.findById(reg.params.userId)
   .then((user) => {
       if (!user) {
-        return res
-          .status(404).send({ message: " Пользователь по указанному id не найден" });
+        return res.status(404).send({ message: " Пользователь по указанному id не найден" });
       }
       return res.status(200).send(user);
     })
     .catch((err) => {
-      console.log(err);
       if (err.name === "CastError") {
-        res.status(400).send({ message: "Запрос к серверу содержит синтаксическую ошибку" });
+        return res.status(400).send({ message: "Запрос к серверу содержит синтаксическую ошибку" });
       }
       if (res) {
-        res.send({ message: "Ошибка !!!" });
+       return res.send({ message: "Ошибка." });
       }
     });
 
@@ -54,15 +51,11 @@ module.exports.patchUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        console.log(`Ошибка: ${err}`);
-        res
-          .status(400)
-          .send({ message: "Пользователь с указанным id не найден." });
+        return res.status(404).send({ message: "Пользователь с указанным id не найден." });
       }
       if (err.name === "ValidationError") {
-        res.status(400).send({message: "Переданы некорректные данные при обновлении профиля."});
+        return res.status(400).send({message: "Переданы некорректные данные при обновлении профиля."});
       }
-      console.log(`Ошибка: ${err}`);
       return res.status(500).send({ message: "Ошибка." });
     });
 };
@@ -76,13 +69,11 @@ module.exports.patchUserAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        console.log(`Ошибка: ${err}`);
-        res.status(404).send({ message: "Пользователь с указанным _id не найден." });
+        return res.status(404).send({ message: "Пользователь с указанным id не найден." });
       }
       if (err.name === "ValidationError") {
-        console.log(`Ошибка: ${err}`);
-        res.status(400).send({message: "Переданы некорректные данные при обновлении аватара."});
+        return res.status(400).send({message: "Переданы некорректные данные при обновлении аватара."});
       }
-      return res.status(500).send({ message: "Ошибка!!!" });
+      return res.status(500).send({ message: "Ошибка." });
     });
 };
