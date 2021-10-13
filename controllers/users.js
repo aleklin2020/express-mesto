@@ -8,9 +8,9 @@ module.exports.postUsers = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send(`message: ${err}`);
+        return res.status(400).send({ message: 'Неверно заполнены поля формы' });
       }
-      return res.status(500).send(`Ошибка: ${err}`);
+      return res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
 // Возврашение всех пользователей

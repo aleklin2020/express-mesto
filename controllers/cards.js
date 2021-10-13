@@ -11,9 +11,9 @@ module.exports.postCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send(`message: ${err}`);
+        return res.status(400).send({ message: 'Неверно заполнены поля формы' });
       }
-      return res.status(500).send(`Ошибка: ${err}`);
+      return res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
 // Возврат всех карточек
@@ -35,11 +35,11 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send(`message: ${err}`);
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
       } if (err.name === 'CastError') {
         return res.status(404).send({ message: 'Передан несуществующий id карточки.' });
       }
-      return res.status(500).send(`Ошибка: ${err}`);
+      return res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
 // установка лайк
