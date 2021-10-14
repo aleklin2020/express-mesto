@@ -31,13 +31,14 @@ module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
   return Card.findByIdAndRemove(cardId)
     .then((card) => {
+      if (!card) {
+        return res.status(404).send({ message: "Передан несуществующий id карточки." });
+      }
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Переданы некорректные данные' });
-      } if (err.name === 'CastError') {
-        return res.status(404).send({ message: 'Передан несуществующий id карточки.' });
       }
       return res.status(500).send({ message: 'Ошибка сервера' });
     });
