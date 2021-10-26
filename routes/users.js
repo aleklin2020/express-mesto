@@ -1,15 +1,38 @@
 const router = require("express").Router();
+const { celebrate, Joi } = require('celebrate');
 const {
-  postUsers,
   getUser,
   getUsersId,
   patchUser,
   patchUserAvatar,
+  getUserMe,
 } = require("../controllers/users");
 
-router.post('/users', postUsers);// Создание нового пользователя
+router.get('/users/me', getUserMe); // получение информация о пользователи
+
+
 router.get('/users', getUser); // Возврат всех пользователей
-router.get('/users/:userId', getUsersId); // возврат пользователя по id
-router.patch('/users/me', patchUser); // обеовление профиля
+router.get('/users/:userId',
+celebrate({
+  // валидируем параметры
+  params: Joi.object().keys({
+    userId: Joi.string().required().alphanum().length(24),
+  }),
+}),
+ getUsersId); // возврат пользователя по id
+
+
+router.patch('/users/me',
+celebrate({
+  // валидируем body
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+  }),
+}),
+ patchUser); // обеовление профиля
+
+
+
 router.patch('/users/me/avatar', patchUserAvatar); // обновление аватар
 module.exports = router;
