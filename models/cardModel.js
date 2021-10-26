@@ -11,8 +11,8 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String, // имя — это строка
     required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
-     validate: {
-      validator: (url) => validator.isUrl(url),
+    validate: {
+      validator: (url) => { return validator.isUrl(url); },
       message: 'Ссылка не валидна',
     },
   },

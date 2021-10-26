@@ -1,5 +1,7 @@
 const Card = require("../models/cardModel");
-const {IncorrectDataError, ForbiddenDataError, NotFoundError} = require('../erors/erors');
+const IncorrectDataError = require('../erors/incorrect-data-err');
+const ForbiddenDataError = require('../erors/forbidden-err');
+const NotFoundError = require('../erors/not-found-err');
 
 // создает карточку
 module.exports.postCard = (req, res, next) => {
@@ -7,7 +9,7 @@ module.exports.postCard = (req, res, next) => {
   const owner = req.user._id;
   console.log(req.body);
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => { return res.send({ data: card }); })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new IncorrectDataError('Переданы некорректные данные при создании карточки'));
@@ -18,7 +20,7 @@ module.exports.postCard = (req, res, next) => {
 // Возврат всех карточек
 module.exports.getCard = (req, res, next) => {
   return Card.find({})
-    .then((card) => res.send({ data: card }))
+    .then((card) => { return res.send({ data: card }); })
     .catch(next);
 };
 // удаление карточки
@@ -75,7 +77,7 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true }
   )
-   .then((card) => {
+    .then((card) => {
       if (card) {
         return res.send({ data: card });
       }

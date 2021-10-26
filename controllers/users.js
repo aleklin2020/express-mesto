@@ -1,11 +1,14 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const validator = require('validator');
-const {IncorrectDataError, UnauthorizedError, NotFoundError} = require('../erors/erors');
+const jwt = require('jsonwebtoken');
 const User = require("../models/userModel");
+const IncorrectDataError = require('../erors/incorrect-data-err');
+const UnauthorizedError = require('../erors/unauthorized-err');
+const NotFoundError = require('../erors/not-found-err');
+
 // аутификация пользователя
 module.exports.login = (req, res, next) => {
-   const { email, password } = req.body;
+  const { email, password } = req.body;
 
   User.findOne({ email }).select('+password')
     .then((user) => {
@@ -16,13 +19,8 @@ module.exports.login = (req, res, next) => {
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-
-
-
             throw new UnauthorizedError('Неправильные почта или пароль');
           }
-
-
           const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
 
           return res
@@ -37,7 +35,7 @@ module.exports.login = (req, res, next) => {
 
 // Создание нового пользователя
 module.exports.postUsers = (req, res, next) => {
-   const {
+  const {
     name,
     about,
     avatar,
@@ -48,7 +46,7 @@ module.exports.postUsers = (req, res, next) => {
   bcrypt
     .hash(password, 10) // хешируем пароль
     .then((hash) => {
-      if (!validator.isEmail('foo@bar.com')) {
+      if (!validator.isEmail('aleks@yandex.com')) {
         throw new IncorrectDataError('Передан некорректный e-mail');
       }
       return User.create({
@@ -59,10 +57,12 @@ module.exports.postUsers = (req, res, next) => {
         password: hash,
       });
     })
-    .then((user) => res
-      .send({
-        data: user,
-      }))
+    .then((user) => {
+      return res
+        .send({
+          data: user,
+        });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new IncorrectDataError('Передан некорректный e-mail'));
@@ -76,25 +76,27 @@ module.exports.postUsers = (req, res, next) => {
 // Возврашение всех пользователей
 module.exports.getUser = (reg, res, next) => {
   return User.find({})
-    .then((users) => res
-      .send({
-        data: users,
-      }))
+    .then((users) => {
+      return res
+        .send({
+          data: users,
+        });
+    })
     .catch(next);
 };
 
 // получения информации о пользователе
 module.exports.getUserMe = (req, res, next) => {
-  const { userId } = req.user._id;
+  const { userIdMe } = req.user._id;
 
-  User.findById(userId)
+  User.findById(userIdMe)
     .then((user) => {
       if (user) {
         return res.send({
           data: user,
         });
       }
-      throw new NotFoundError('Пользователь по указанному _id не найден');
+      throw new NotFoundError('Пользователь по указанному id не найден');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -105,8 +107,8 @@ module.exports.getUserMe = (req, res, next) => {
 };
 
 // Возврашение пользователя по id
-module.exports.getUsersId = (reg, res, next) => {
-   const { userId } = req.params;
+module.exports.getUsersId = (req, res, next) => {
+  const { userId } = req.params;
 
   User.findById(userId)
     .then((user) => {
@@ -128,7 +130,7 @@ module.exports.getUsersId = (reg, res, next) => {
 module.exports.patchUser = (req, res, next) => {
   const { name, about } = req.body;
   return User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-     .then((user) => {
+    .then((user) => {
       if (user) {
         return res.send({
           data: user,
@@ -150,7 +152,7 @@ module.exports.patchUser = (req, res, next) => {
 module.exports.patchUserAvatar = (req, res, next) => {
   const avatar = req.body;
   return User.findByIdAndUpdate(req.user._id, avatar, { new: true, runValidators: true })
-   .then((user) => {
+    .then((user) => {
       if (user) {
         return res.send({
           data: user,

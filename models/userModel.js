@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require('validator');
+
 const userSchema = new mongoose.Schema({
   name: { // у пользователя есть имя — опишем требования к имени в схеме:
     type: String, // имя — это строка
