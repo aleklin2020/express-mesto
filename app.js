@@ -7,6 +7,7 @@ const routerUser = require("./routes/users");
 const routerCard = require("./routes/cards");
 const auth = require('./middlewares/auth');
 const centralizedErrors = require('./middlewares/centralizedErrors');
+const { method } = require('./method/method');
 const {
   login,
   postUsers,
@@ -61,7 +62,7 @@ app.post('/signup',
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string(),
+      avatar: Joi.string().custom(method),
       email: Joi.string().required().email(),
       password: Joi.string().required().pattern(new RegExp('^[a-zA-Z0-9]{8,}$')),
     }),

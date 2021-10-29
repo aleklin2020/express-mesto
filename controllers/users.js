@@ -5,6 +5,7 @@ const User = require("../models/userModel");
 const IncorrectDataError = require('../erors/incorrect-data-err');
 const UnauthorizedError = require('../erors/unauthorized-err');
 const NotFoundError = require('../erors/not-found-err');
+const IncorrectEmail = require('../erors/IncorrectEmail');
 
 // аутификация пользователя
 module.exports.login = (req, res, next) => {
@@ -26,7 +27,7 @@ module.exports.login = (req, res, next) => {
           return res
 
             .cookie(jwt, token, { maxAge: 3600000 * 24 * 7, httpOnly: true })
-            .end();
+            .send({ message: "Вы успешно авторизовались!" });
         })
         .catch(next);
     })
@@ -67,8 +68,8 @@ module.exports.postUsers = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new IncorrectDataError('Передан некорректный e-mail'));
       }
-      if (err.name === 'MongoError' && err.code === 11000) {
-        next(new IncorrectDataError('Пользователь с таким e-mail уже существует'));
+      if (err.name === 'MongoServerError' && err.code === 11000) {
+        next(new IncorrectEmail('Пользователь с таким e-mail уже существует'));
       }
       next(err);
     });

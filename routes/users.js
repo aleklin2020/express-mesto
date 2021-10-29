@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { celebrate, Joi } = require('celebrate');
+const { method } = require('../method/method');
 const {
   getUser,
   getUsersId,
@@ -15,7 +16,7 @@ router.get('/users/:userId',
   celebrate({
   // валидируем параметры
     params: Joi.object().keys({
-      userId: Joi.string().required().alphanum().length(24),
+      userId: Joi.string().required().hex().length(24),
     }),
   }),
   getUsersId); // возврат пользователя по id
@@ -30,5 +31,12 @@ router.patch('/users/me',
   }),
   patchUser); // обеовление профиля
 
-router.patch('/users/me/avatar', patchUserAvatar); // обновление аватар
+router.patch('/users/me/avatar',
+  celebrate({
+  // валидируем body
+    body: Joi.object().keys({
+      avatar: Joi.string().required().custom(method),
+    }),
+  }),
+  patchUserAvatar); // обновление аватар
 module.exports = router;
