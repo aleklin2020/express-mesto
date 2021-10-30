@@ -61,7 +61,13 @@ module.exports.postUsers = (req, res, next) => {
     .then((user) => {
       return res
         .send({
-          data: user,
+
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+          _id: user._id,
+
         });
     })
     .catch((err) => {
