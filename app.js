@@ -8,12 +8,13 @@ const routerCard = require("./routes/cards");
 const auth = require('./middlewares/auth');
 const centralizedErrors = require('./middlewares/centralizedErrors');
 const { method } = require('./method/method');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const {
   login,
   postUsers,
 } = require('./controllers/users');
 // Слушаем 3000
-const PORT = 3000;
+const PORT = 3001;
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -48,6 +49,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(requestLogger);
+
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 app.post('/signin',
   celebrate({
     body: Joi.object().keys({
@@ -77,6 +87,7 @@ app.use(auth);
 
 app.use("/", routerUser);
 app.use("/", routerCard);
+app.use(errorLogger);
 app.use(errors());
 app.use(centralizedErrors); // централизованная обработка ошибок
 app.listen(PORT, () => {
