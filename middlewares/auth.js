@@ -4,7 +4,7 @@ const UnauthorizedError = require('../erors/unauthorized-err');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
-  const { cookie } = req.headers;
+  const  { cookie } = req.headers;
   console.log(cookie)
 
   if (!cookie || !cookie.startsWith('Bearer ')) {

@@ -14,7 +14,7 @@ const {
   login,
   postUsers,
 } = require('./controllers/users');
-// Слушаем 3000
+// Слушаем 3001
 const PORT = 3001;
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb', {
