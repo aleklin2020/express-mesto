@@ -28,7 +28,11 @@ app.use(cookieParser());
 
 // Массив разешённых доменов
 const allowedCors = [
-  'localhost:3000',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://pictures-host.nomoredomains.rocks',
+  'https://praktikum.tk',
+
 ];
 
 // безопасность
