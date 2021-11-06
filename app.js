@@ -13,6 +13,7 @@ const {
   login,
   postUsers,
 } = require('./controllers/users');
+require('dotenv').config();
 // Слушаем 3000
 const PORT = 3001;
 const app = express();
@@ -21,6 +22,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 
 });
+
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

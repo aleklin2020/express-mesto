@@ -6,6 +6,7 @@ const IncorrectDataError = require('../erors/incorrect-data-err');
 const UnauthorizedError = require('../erors/unauthorized-err');
 const NotFoundError = require('../erors/not-found-err');
 const IncorrectEmail = require('../erors/IncorrectEmail');
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 // аутификация пользователя
 module.exports.login = (req, res, next) => {
@@ -22,12 +23,11 @@ module.exports.login = (req, res, next) => {
           if (!matched) {
             throw new UnauthorizedError('Неправильные почта или пароль');
           }
-          const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === "production" ? JWT_SECRET : "dev-secret", { expiresIn: '7d' });
 
           return res
-
-            .cookie(jwt, token, { maxAge: 3600000 * 24 * 7, httpOnly: true })
-            .send({ message: "Вы успешно авторизовались!" });
+            .cookie(jwt, JSON.stringify(token), { maxAge: 3600000 * 24 * 7, httpOnly: true })
+            .send({ message: "Вы успешно авторизовались!", token });
         })
         .catch(next);
     })
@@ -44,6 +44,8 @@ module.exports.postUsers = (req, res, next) => {
     password,
   } = req.body;
 
+
+
   bcrypt
     .hash(password, 10) // хешируем пароль
     .then((hash) => {
@@ -57,6 +59,7 @@ module.exports.postUsers = (req, res, next) => {
         email,
         password: hash,
       });
+
     })
     .then((user) => {
       return res
