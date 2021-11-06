@@ -37,20 +37,22 @@ const allowedCors = [
 
 // безопасность
 app.use((req, res, next) => {
-  const { origin } = req.headers; // Записываем в переменную origin соответствующий заголовок
+  const { origin } = req.headers;
+  const { method } = req;
+  const requestHeaders = req.headers["access-control-request-headers"];
+  const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
 
   if (allowedCors.includes(origin)) {
-    // Проверяем, что значение origin есть среди разрешённых доменов
-    res.header('Access-Control-Allow-Origin', origin);
+    res.header("Access-Control-Allow-Origin", origin);
   }
 
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept',
-  );
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  if (method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", DEFAULT_ALLOWED_METHODS);
+    res.header("Access-Control-Allow-Headers", requestHeaders);
+    return res.end();
+  }
 
-  next();
+  return next();
 });
 
 app.use(requestLogger);
