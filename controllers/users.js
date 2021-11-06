@@ -15,7 +15,7 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        // пользователь с такой почтой не найден
+
         throw new UnauthorizedError('Неправильные почта или пароль');
       }
       return bcrypt.compare(password, user.password)
@@ -26,7 +26,7 @@ module.exports.login = (req, res, next) => {
           const token = jwt.sign({ _id: user._id }, NODE_ENV === "production" ? JWT_SECRET : "dev-secret", { expiresIn: '7d' });
 
           return res
-            .cookie(jwt, JSON.stringify(token), { maxAge: 3600000 * 24 * 7, httpOnly: true })
+            .cookie(jwt, token, { maxAge: 3600000 * 24 * 7, httpOnly: true })
             .send({ message: "Вы успешно авторизовались!", token });
         })
         .catch(next);
@@ -43,8 +43,6 @@ module.exports.postUsers = (req, res, next) => {
     email,
     password,
   } = req.body;
-
-
 
   bcrypt
     .hash(password, 10) // хешируем пароль
