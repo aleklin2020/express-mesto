@@ -9,7 +9,7 @@ module.exports.postCard = (req, res, next) => {
   const owner = req.user._id;
   console.log(req.body);
   Card.create({ name, link, owner })
-    .then((card) => { return res.send( card ); })
+    .then((card) => { return res.send({card} ); })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new IncorrectDataError('Переданы некорректные данные при создании карточки'));
@@ -20,7 +20,7 @@ module.exports.postCard = (req, res, next) => {
 // Возврат всех карточек
 module.exports.getCard = (req, res, next) => {
   return Card.find({})
-    .then((card) => { return res.send(card); })
+    .then((card) => { return res.send({card}); })
     .catch(next);
 };
 // удаление карточки
