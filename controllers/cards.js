@@ -6,10 +6,10 @@ const NotFoundError = require('../erors/not-found-err');
 // создает карточку
 module.exports.postCard = (req, res, next) => {
   const { name, link } = req.body;
-  const  owner  = req.user._id;
+  const   owner   = req.user._id;
 
   Card.create({ name, link, owner })
-    .then((card) =>  res.send({ card}))
+    .then((card) =>  res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new IncorrectDataError('Переданы некорректные данные при создании карточки'));
@@ -22,7 +22,7 @@ module.exports.postCard = (req, res, next) => {
 // Возврат всех карточек
 module.exports.getCard = (req, res, next) => {
    Card.find({})
-    .then((cards) =>  res.send({ cards }))
+    .then((cards) =>  res.send( cards ))
     .catch(next);
 };
 // удаление карточки
@@ -62,7 +62,7 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card) {
-        return res.send({ data: card });
+        return res.send({ card });
       }
       throw new NotFoundError('Передан несуществующий id карточки');
     })
@@ -81,7 +81,7 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card) {
-        return res.send({ data: card });
+        return res.send({ card });
       }
       throw new NotFoundError('Передан несуществующий id карточки');
     })
