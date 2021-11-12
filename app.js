@@ -15,7 +15,7 @@ const {
   postUsers,
 } = require('./controllers/users');
 // Слушаем 3001
-const PORT = 3003;
+const PORT = 3001;
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -32,6 +32,7 @@ app.use(cookieParser());
 const allowedCors = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'http://localhost:3002',
   'http://pictures-host.nomoredomains.rocks',
   'https://praktikum.tk',
 
