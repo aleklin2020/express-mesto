@@ -102,7 +102,7 @@ module.exports.getUserMe = (req, res, next) => {
     .then((user) => {
       if (user) {
         return res.send({
-          data: user,
+         data: user
         });
       }
       throw new NotFoundError('Пользователь по указанному id не найден');
@@ -117,7 +117,7 @@ module.exports.getUserMe = (req, res, next) => {
 
 // Возврашение пользователя по id
 module.exports.getUsersId = (req, res, next) => {
-  const { userId } = req.params;
+  const  userId  = req.params;
 
   User.findById(userId)
     .then((user) => {

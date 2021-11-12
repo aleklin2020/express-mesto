@@ -10,11 +10,13 @@ const {
   dislikeCard,
 } = require("../controllers/cards");
 
-router.use((req, res, next) => {
+/* router.use((req, res, next) => {
   next(new NotFoundError('Ошибка - некорректный запрос'));
-});
+}); */
 
-router.post('/cards',
+router.get('/cards', getCard);// возврашает карточки
+
+ router.post('/cards',
   celebrate({
   // валидируем body
     body: Joi.object().keys({
@@ -24,7 +26,7 @@ router.post('/cards',
   }),
   postCard); // создает карточку
 
-router.get('/cards', getCard);// возврашает карточки
+
 
 router.delete('/cards/:cardId',
   celebrate({
