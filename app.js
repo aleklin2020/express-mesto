@@ -8,7 +8,7 @@ const routerUser = require("./routes/users");
 const routerCard = require("./routes/cards");
 const auth = require('./middlewares/auth');
 const centralizedErrors = require('./middlewares/centralizedErrors');
-const { methodes } = require('./method/method');
+const { method } = require('./method/method');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const {
   login,
@@ -33,11 +33,9 @@ const allowedCors = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:3002',
-  'http://localhost:3003',
-  'http://localhost:3004',
   'http://pictures-host.nomoredomains.rocks',
   'https://praktikum.tk',
-  'https://pictures-host.nomoredomains.rocks',
+
 ];
 
 // безопасность
@@ -62,6 +60,7 @@ app.use((req, res, next) => {
 
 app.use(requestLogger);
 
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
@@ -82,21 +81,21 @@ app.post('/signup',
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().custom(methodes),
+      avatar: Joi.string().custom(method),
       email: Joi.string().required().email(),
       password: Joi.string().required().pattern(new RegExp('^[a-zA-Z0-9]{8,}$')),
     }),
   }),
   postUsers);
+/*
+app.use((req, res) => {
+  return res.status(404).send({ message: 'Страница не найдена' });
+}); */
 
 app.use(auth);
 
 app.use("/", routerUser);
 app.use("/", routerCard);
-
-app.use((req, res) => {
-  return res.status(404).send({ message: 'Страница не найдена' });
-});
 app.use(errorLogger);
 app.use(errors());
 app.use(centralizedErrors); // централизованная обработка ошибок
