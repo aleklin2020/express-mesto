@@ -8,7 +8,7 @@ const routerUser = require("./routes/users");
 const routerCard = require("./routes/cards");
 const auth = require('./middlewares/auth');
 const centralizedErrors = require('./middlewares/centralizedErrors');
-const { method } = require('./method/method');
+const { methodes } = require('./method/method');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const {
   login,
@@ -42,7 +42,7 @@ const allowedCors = [
 // безопасность
 app.use((req, res, next) => {
   const { origin } = req.headers;
-  const { methods } = req;
+  const { method } = req;
   const requestHeaders = req.headers["access-control-request-headers"];
   const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
 
@@ -50,7 +50,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", origin);
   }
 
-  if (methods === "OPTIONS") {
+  if (method === "OPTIONS") {
     res.header("Access-Control-Allow-Methods", DEFAULT_ALLOWED_METHODS);
     res.header("Access-Control-Allow-Headers", requestHeaders);
     return res.end();
@@ -81,7 +81,7 @@ app.post('/signup',
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().custom(method),
+      avatar: Joi.string().custom(methodes),
       email: Joi.string().required().email(),
       password: Joi.string().required().pattern(new RegExp('^[a-zA-Z0-9]{8,}$')),
     }),
