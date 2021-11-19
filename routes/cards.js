@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { celebrate, Joi } = require('celebrate');
-const { method } = require('../method/method');
+const { methodes } = require('../method/method');
 const {
   getCard,
   postCard,
@@ -16,7 +16,7 @@ router.post('/cards',
   // валидируем body
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
-      link: Joi.string().required().custom(method),
+      link: Joi.string().required().custom(methodes),
     }),
   }),
   postCard); // создает карточку
