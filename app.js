@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
+//const cookieParser = require('cookie-parser');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const routerUser = require("./routes/users");
@@ -26,17 +26,18 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cookieParser());
+//app.use(cookieParser());
 
 // Массив разешённых доменов
 const allowedCors = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:3002',
+  'http://localhost:3003',
+  'http://localhost:3004',
   'http://pictures-host.nomoredomains.rocks',
   'https://praktikum.tk',
   'https://pictures-host.nomoredomains.rocks',
-
 ];
 
 // безопасность
