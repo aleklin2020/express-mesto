@@ -35,13 +35,14 @@ const allowedCors = [
   'http://localhost:3002',
   'http://pictures-host.nomoredomains.rocks',
   'https://praktikum.tk',
+  'https://pictures-host.nomoredomains.rocks',
 
 ];
 
 // безопасность
 app.use((req, res, next) => {
   const { origin } = req.headers;
-  const { method } = req;
+  const { methods } = req;
   const requestHeaders = req.headers["access-control-request-headers"];
   const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
 
@@ -49,7 +50,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", origin);
   }
 
-  if (method === "OPTIONS") {
+  if (methods === "OPTIONS") {
     res.header("Access-Control-Allow-Methods", DEFAULT_ALLOWED_METHODS);
     res.header("Access-Control-Allow-Headers", requestHeaders);
     return res.end();
@@ -59,7 +60,6 @@ app.use((req, res, next) => {
 });
 
 app.use(requestLogger);
-
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -87,15 +87,15 @@ app.post('/signup',
     }),
   }),
   postUsers);
-/*
-app.use((req, res) => {
-  return res.status(404).send({ message: 'Страница не найдена' });
-}); */
 
 app.use(auth);
 
 app.use("/", routerUser);
 app.use("/", routerCard);
+
+app.use((req, res) => {
+  return res.status(404).send({ message: 'Страница не найдена' });
+});
 app.use(errorLogger);
 app.use(errors());
 app.use(centralizedErrors); // централизованная обработка ошибок
